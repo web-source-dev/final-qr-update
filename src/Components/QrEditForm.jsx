@@ -30,7 +30,7 @@ const EditQRForm = () => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
+        const response = await axios.get(`https://final-qr-update-b.vercel.app/api/users/${userId}`);
         console.log(response.data);  // Log the user data for debugging
         setFormData({
           ...response.data,
@@ -69,7 +69,7 @@ const EditQRForm = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/qrdata/${userId}`,
+        `https://final-qr-update-b.vercel.app/api/qrdata/${userId}`,
         formDataToSend,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
