@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react'; // Ensure QRCodeCanvas is correctly imported
 import { useNavigate } from 'react-router-dom';
 
 const QRForm = () => {
@@ -24,16 +24,19 @@ const QRForm = () => {
   const [messageType, setMessageType] = useState('');
   const [namedata, setNamedata] = useState('');
 
+  // Handle input field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle file upload
   const handleImageChange = (e) => {
     const { name, files } = e.target;
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
+  // Handle form submission
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -55,7 +58,7 @@ const QRForm = () => {
         setIsSubmitted(true);
         setMessage('Form submitted successfully!');
         setMessageType('success');
-        setNamedata(data.qrdata);
+        setNamedata(data.qrdata); // Store the qrdata response for the QR Code
         setFormData({
           name: '',
           email: '',
@@ -79,6 +82,7 @@ const QRForm = () => {
     }
   };
 
+  // Handle QR code download
   const downloadQRCode = () => {
     const canvas = document.createElement('canvas');
     const qrCanvas = document.getElementById('qr-code-canvas');
@@ -95,9 +99,9 @@ const QRForm = () => {
     context.fillStyle = '#000000';
     context.font = '20px Arial';
     context.textAlign = 'center';
-    context.fillText(namedata.name, canvas.width / 2, 30);
+    context.fillText(namedata.name, canvas.width / 2, 30); // Text for the QR code
 
-    context.drawImage(qrCanvas, padding, 50, qrCodeSize, qrCodeSize);
+    context.drawImage(qrCanvas, padding, 50, qrCodeSize, qrCodeSize); // Draw QR code
 
     context.fillText(`ID: ${userId}`, canvas.width / 2, qrCodeSize + 80);
 
@@ -233,4 +237,5 @@ const QRForm = () => {
 };
 
 export default QRForm;
+
 
