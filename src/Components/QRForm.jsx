@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useNavigate } from 'react-router-dom';
 
 const QRForm = () => {
@@ -28,78 +29,56 @@ const QRForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = async (e) => {
+  const handleImageChange = (e) => {
     const { name, files } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: files[0] }));
+  };
 
-    // Convert image file to base64 string
-    if (files && files[0]) {
-      const file = files[0];
-      const reader = new FileReader();
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
 
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, [name]: reader.result }));
-      };
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      formDataToSend.append(key, formData[key]);
+    }
 
-      reader.readAsDataURL(file);
+    try {
+      const response = await fetch('https://final-qr-update-b.vercel.app/api/qrdata', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const { userId } = data;
+        setUserId(userId);
+        setIsSubmitted(true);
+        setMessage('Form submitted successfully!');
+        setMessageType('success');
+        setNamedata(data.qrdata);
+        setFormData({
+          name: '',
+          email: '',
+          work_email: '',
+          organization: '',
+          phone: '',
+          address: '',
+          youtube_url: '',
+          facebook_url: '',
+          linkden_url: '',
+          twitter_url: '',
+          user_image: null,
+        });
+      } else {
+        throw new Error('Failed to submit form');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setMessage('Error: Please check the data.');
+      setMessageType('error');
     }
   };
 
- const handleFormSubmit = async (e) => {
-  e.preventDefault();
-
-  const dataToSend = { ...formData };
-
-  try {
-    const response = await fetch('https://final-qr-b.vercel.app/api/qrdata', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataToSend),
-    });
-
-    // Check if the response status is OK (200-299)
-    if (!response.ok) {
-      // If not OK, log the status and the response body for debugging
-      const textResponse = await response.text();
-      console.error('Error response:', textResponse);
-      setMessage('Error: Could not submit form.');
-      setMessageType('error');
-      return;
-    }
-
-    // Try to parse the response as JSON
-    const data = await response.json();
-    const { userId, qrdata } = data;
-
-    setUserId(userId);
-    setIsSubmitted(true);
-    setMessage('Form submitted successfully!');
-    setMessageType('success');
-    setNamedata(qrdata);
-
-    // Reset form data
-    setFormData({
-      name: '',
-      email: '',
-      work_email: '',
-      organization: '',
-      phone: '',
-      address: '',
-      youtube_url: '',
-      facebook_url: '',
-      linkden_url: '',
-      twitter_url: '',
-      user_image: null,
-    });
-
-  } catch (error) {
-    // If the error is related to JSON parsing, handle it here
-    console.error('Error submitting form:', error);
-    setMessage('Error: Please check the data.');
-    setMessageType('error');
-  }
-};
   const downloadQRCode = () => {
     const canvas = document.createElement('canvas');
     const qrCanvas = document.getElementById('qr-code-canvas');
@@ -182,6 +161,7 @@ const QRForm = () => {
                   name="user_image"
                   onChange={handleImageChange}
                   accept="image/*"
+                  required
                 />
               </div>
               <div className="right-side-form">
@@ -253,3 +233,4 @@ const QRForm = () => {
 };
 
 export default QRForm;
+
