@@ -44,7 +44,7 @@ const QRForm = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/qrdata`, formDataToSend, {
+      const response = await axios.post(`https://final-qr-update-b.vercel.app/api/qrdata`, formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
@@ -213,7 +213,7 @@ const QRForm = () => {
               <h2>{namedata.name}</h2>
               <QRCodeCanvas
                 id="qr-code-canvas"
-                value={`http://localhost:3000/user/${userId}`}
+                value={`https://final-qr-update.vercel.app/user/${userId}`}
                 size={300}
                 fgColor="#000000"
                 bgColor="#ffffff"
