@@ -247,5 +247,3 @@ const QRForm = () => {
 };
 
 export default QRForm;
-
-
