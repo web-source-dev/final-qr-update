@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { QRCodeCanvas } from 'qrcode.react';
 import { useNavigate } from 'react-router-dom';
 
 const QRForm = () => {
@@ -29,33 +28,47 @@ const QRForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const { name, files } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: files[0] }));
+
+    // Convert image file to base64 string
+    if (files && files[0]) {
+      const file = files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, [name]: reader.result }));
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    const formDataToSend = new FormData();
-    for (const key in formData) {
-      formDataToSend.append(key, formData[key]);
-    }
+    const dataToSend = { ...formData };
 
     try {
-      const response = await fetch('https://final-qr-update-b.vercel.app/api/qrdata', {
+      const response = await fetch('https://final-qr-b.vercel.app/api/qrdata', {
         method: 'POST',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
         const data = await response.json();
         const { userId, qrdata } = data;
+
         setUserId(userId);
         setIsSubmitted(true);
         setMessage('Form submitted successfully!');
         setMessageType('success');
         setNamedata(qrdata);
+
+        // Reset form data
         setFormData({
           name: '',
           email: '',
@@ -163,7 +176,6 @@ const QRForm = () => {
                   name="user_image"
                   onChange={handleImageChange}
                   accept="image/*"
-                  required
                 />
               </div>
               <div className="right-side-form">
@@ -235,4 +247,5 @@ const QRForm = () => {
 };
 
 export default QRForm;
+
 
