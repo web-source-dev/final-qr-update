@@ -165,7 +165,6 @@ const QRForm = () => {
                   name="user_image"
                   onChange={handleImageChange}
                   accept="image/*"
-                  required
                 />
               </div>
               <div className="right-side-form">
