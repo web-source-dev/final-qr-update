@@ -44,56 +44,62 @@ const QRForm = () => {
     }
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+ const handleFormSubmit = async (e) => {
+  e.preventDefault();
 
-    const dataToSend = { ...formData };
+  const dataToSend = { ...formData };
 
-    try {
-      const response = await fetch('https://final-qr-b.vercel.app/api/qrdata', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
+  try {
+    const response = await fetch('https://final-qr-b.vercel.app/api/qrdata', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSend),
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        const { userId, qrdata } = data;
-
-        setUserId(userId);
-        setIsSubmitted(true);
-        setMessage('Form submitted successfully!');
-        setMessageType('success');
-        setNamedata(qrdata);
-
-        // Reset form data
-        setFormData({
-          name: '',
-          email: '',
-          work_email: '',
-          organization: '',
-          phone: '',
-          address: '',
-          youtube_url: '',
-          facebook_url: '',
-          linkden_url: '',
-          twitter_url: '',
-          user_image: null,
-        });
-      } else {
-        const errorData = await response.json();
-        setMessage(errorData.message || 'Error: Please check the data.');
-        setMessageType('error');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setMessage('Error: Please check the data.');
+    // Check if the response status is OK (200-299)
+    if (!response.ok) {
+      // If not OK, log the status and the response body for debugging
+      const textResponse = await response.text();
+      console.error('Error response:', textResponse);
+      setMessage('Error: Could not submit form.');
       setMessageType('error');
+      return;
     }
-  };
 
+    // Try to parse the response as JSON
+    const data = await response.json();
+    const { userId, qrdata } = data;
+
+    setUserId(userId);
+    setIsSubmitted(true);
+    setMessage('Form submitted successfully!');
+    setMessageType('success');
+    setNamedata(qrdata);
+
+    // Reset form data
+    setFormData({
+      name: '',
+      email: '',
+      work_email: '',
+      organization: '',
+      phone: '',
+      address: '',
+      youtube_url: '',
+      facebook_url: '',
+      linkden_url: '',
+      twitter_url: '',
+      user_image: null,
+    });
+
+  } catch (error) {
+    // If the error is related to JSON parsing, handle it here
+    console.error('Error submitting form:', error);
+    setMessage('Error: Please check the data.');
+    setMessageType('error');
+  }
+};
   const downloadQRCode = () => {
     const canvas = document.createElement('canvas');
     const qrCanvas = document.getElementById('qr-code-canvas');
