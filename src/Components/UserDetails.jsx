@@ -10,7 +10,7 @@ const UserDetails = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/${userId}`);
+        const response = await axios.get(`https://final-qr-update-b.vercel.app/api/users/${userId}`);
         console.log(response.data);
         setUser(response.data); // Set the user data
         setErrorMessage(''); // Clear error message if the user is found
@@ -70,7 +70,7 @@ END:VCARD`;
           <div className="image-name-flex">
                   {user.user_image && (
                     <img
-                      src={`http://localhost:5000/uploads/${user.user_image}`} // Fix the path here
+                      src={`https://final-qr-update-b.vercel.app/uploads/${user.user_image}`} // Fix the path here
                       alt={`${user.user_image}'s profile`}
                       className="profile-image"
                       width="50px"
