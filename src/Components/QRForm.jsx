@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,17 +43,19 @@ const QRForm = () => {
     }
 
     try {
-      const response = await axios.post(`https://final-qr-update-b.vercel.app/api/qrdata`, formDataToSend, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      const response = await fetch('https://final-qr-update-b.vercel.app/api/qrdata', {
+        method: 'POST',
+        body: formDataToSend,
       });
 
-      if (response.status === 201) {
-        const { userId } = response.data;
+      if (response.ok) {
+        const data = await response.json();
+        const { userId, qrdata } = data;
         setUserId(userId);
         setIsSubmitted(true);
         setMessage('Form submitted successfully!');
         setMessageType('success');
-        setNamedata(response.data.qrdata);
+        setNamedata(qrdata);
         setFormData({
           name: '',
           email: '',
@@ -68,6 +69,10 @@ const QRForm = () => {
           twitter_url: '',
           user_image: null,
         });
+      } else {
+        const errorData = await response.json();
+        setMessage(errorData.message || 'Error: Please check the data.');
+        setMessageType('error');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -230,3 +235,4 @@ const QRForm = () => {
 };
 
 export default QRForm;
+
