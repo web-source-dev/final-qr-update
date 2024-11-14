@@ -887,6 +887,7 @@ body.dark-mode .user-detail-itemd-adds {
   /* flex-direction: column; */
   position: sticky;
   top: 0;
+  z-index:9999;
   gap: 15px;
   justify-content: space-around;
   margin-bottom: 20px;
