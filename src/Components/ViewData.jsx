@@ -216,7 +216,7 @@ const ViewData = () => {
                       onClick={() => handleQRCodeClick(`qr-code-canvas-${user._id}`)} // Open QR in popup
                     />
                     <button className="all-users-page-download-btn-qr" onClick={() => downloadQRCode(user.name, user._id)}>
-                      Download <i className="ri-download-line"></i>
+                      <span style:{{fontSize:"8px"}}>Download</span><i className="ri-download-line"></i>
                     </button>
                   </div>
                 )}
