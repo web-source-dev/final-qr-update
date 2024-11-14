@@ -49,7 +49,6 @@ const QRForm = () => {
       const response = await fetch('https://final-qr-update-b.vercel.app/api/qrdata', {
         method: 'POST',
         body: formDataToSend,
-  mode: 'no-cors'
       });
 
       if (response.ok) {
