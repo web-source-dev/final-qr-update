@@ -119,7 +119,7 @@ const QRForm = () => {
         <h1>Form Submission</h1>
 
         {!isSubmitted ? (
-          <form className="qr-form" onSubmit={handleFormSubmit}>
+          <form className="qr-form" onSubmit={handleFormSubmit} encType="multipart/form-data">
             <div className="form-inputs-flex">
               <div className="left-side-form">
                 <input
